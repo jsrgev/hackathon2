@@ -558,7 +558,10 @@ const cleanUpAfterAdd = () => {
     node.innerHTML = "";
     node.removeEventListener("click", deleteRow)
   }
-  document.querySelector("input").remove();
+  let input = document.querySelector("input");
+  if (input) {
+    input.remove();
+  }
 }
 
 const addToArrays = () => {
