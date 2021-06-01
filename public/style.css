@@ -1,0 +1,340 @@
+html{
+	font-size:  16px;
+}
+
+body {
+	margin: 0;
+	padding: 30px 40px;
+	background-color: #88D4E4;
+}
+
+body, input {
+	font-family: calibri;
+	font-size: 1rem;	
+}
+
+header {
+	/*height: 6rem;*/
+	/*margin: 0 40px;*/
+	/*display: flex;*/
+    /*justify-content: space-between;*/
+}
+
+h1 {
+    text-align: center;
+	margin-top: 0;
+	color: #0055ff;
+}
+
+header i {
+	margin-left: 1rem;
+	color: #ffff3a;
+	font-size: 1.8rem;
+}
+
+h3 {
+    text-align: center;
+	margin-top: 0;
+	font-size: 1.1rem;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+#root {
+	border: 2px solid gray;
+	padding: 2rem;
+	min-height: calc(100vh - 128px - 60px - 35px);
+    align-content: flex-start;
+    box-sizing: border-box;
+    background-color: #fff;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 40px;
+	justify-content: center;
+	align-items: center;
+    justify-items: center;
+}
+
+section {
+  /*margin-top: 2rem;*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+	border: 2px solid gray;
+	padding: 2rem;
+	min-height: calc(100vh - 128px - 60px);
+    align-content: flex-start;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+
+fieldset {
+  color: white;
+}
+
+form {
+  padding: 0 2rem;
+  margin: 1rem 0;
+}
+.formBox {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem;
+}
+.formBox label {
+  flex-basis: 20ch;
+  text-align: end;
+  padding-right: 2rem;
+  padding-inline-end: 2rem;
+}
+.formBox input {
+  flex-basis: auto;
+  position: relative;
+}
+.formBox button {
+  /*text-align: center;*/
+  margin: auto;
+}
+legend {
+  margin: 0 4rem;
+  padding: 0 1rem;
+}
+
+
+
+
+
+#languageSelection, nav {
+	display: grid;
+	/*grid-template-columns: repeat(3, 1fr);*/
+	gap: 2rem;
+    /*justify-content: space-around;*/
+    font-size: 1.1rem;
+}
+
+#languageSelection select option {
+    font-size: 1.1rem;
+}
+
+#languageSelection {
+	grid-template-columns: repeat(2, 1fr);
+}
+
+#languageSelection div {
+	text-align: center;
+}
+
+nav {
+	grid-template-columns: repeat(3, 1fr);
+	margin-top: 20px;
+}
+
+.twoColumn {
+	grid-template-columns: 1fr 1fr;
+}
+
+nav div {
+	border: 2px solid lightgray;
+	border-bottom: none;
+	padding: 3px;
+	background: lightgray;
+	text-align: center;
+	box-sizing: border-box;
+  position: relative;
+}
+
+.active {
+	border: 2px solid gray;
+	border-bottom: none;
+	background-color: white;
+	color: #0055ff;
+	font-weight: 600;
+}
+
+
+
+.active:after {
+	content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: white;
+}
+
+
+.rtl {
+	direction: rtl;
+}
+
+/* start screen */
+
+/*.startScreen {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 40px;
+	justify-content: center;
+	align-items: center;
+    justify-items: center;
+}*/
+
+select {
+	outline: none;
+}
+
+
+/* card quiz */
+
+
+
+.card {
+	width: 300px;
+	height: 100px;
+	border: 2px solid #88D4E4;
+	display: grid;
+	justify-content: center;
+	align-items: center;
+    justify-items: center;
+    margin: auto;
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    /*box-shadow: 1px 1px 2px lightgrey;*/
+}
+
+.card div {
+	width: 100%;
+    text-align: center;
+}
+
+.card span:first-child {
+	float: left;
+}
+
+input {
+		padding: 0 0 1px 0;
+}
+
+.card > div input {
+	text-align: center;
+}
+
+.card > div:last-child span {
+    margin-bottom: 2px;
+}
+
+.targetLanguage, .targetLanguage input {
+	color:  #0055ff;
+	border-color: #0055ff;
+}
+
+.sourceLanguage, .sourceLanguage input {
+	color: gray;
+	border-color: gray;
+}
+div.sourceLanguage {
+	height: 27px;
+}
+
+input {
+    border-width: 0 0 2px 0;
+	outline:  0;
+}
+
+
+#actions {
+	/*height: 100px;*/
+	/*margin: auto;*/
+	width: 300px;
+	/*display: flex;*/
+    /*justify-content: space-around;*/
+    justify-content: center;
+    justify-items: center;
+	align-items: center;
+    display: grid;
+    gap: 1rem 2rem;
+    grid-template-columns: max-content max-content;
+}
+
+
+#actions.oneColumn {
+	grid-template-columns: max-content;
+}
+
+#actions p {
+	margin: 0;
+}
+
+/* new vocab */
+
+
+
+#newVocabInputs {
+	width: 60%;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: .3rem;
+}
+
+#myVocab {
+	width: 60%;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: .3rem;
+}
+
+
+.delete button {
+	margin: auto;
+	display: block;
+	visibility: hidden;
+}
+
+.delete:hover button {
+	/*margin: auto;*/
+	visibility: visible;
+}
+
+.incorrect {
+	color: red;
+}
+
+/*option:hover,
+option:focus,
+option:active,
+option:checked {
+	font-weight: 600;
+	color:  #0055ff;
+}*/
+
+button {
+	padding: 4px 6px;
+	background-color: white;
+	outline: none;
+	border: 2px solid #0055ff;
+	border-radius: 6px;
+  box-shadow: 1px 1px 2px lightgrey;
+
+}
+
+button:hover,button:focus {
+	box-shadow: inset 1px 1px 2px lightgrey;
+	background-color: #ececec;
+	border-color: blue;
+}
+
+button:active {
+    box-shadow: inset 1px 1px 2px grey;
+}
+
+footer {
+	text-align: center;
+	margin-top: 1rem;
+}
+
+
+
