@@ -1,4 +1,4 @@
-//Gavin code for front end authorization starts here, checking for JWT
+Gavin code for front end authorization starts here, checking for JWT
 window.addEventListener("load", (event) => {
   if (sessionStorage.getItem("myapp_token") === null) {
     // alert(`it appears you're not logged in, routing you to login`);
@@ -13,6 +13,7 @@ window.addEventListener("load", (event) => {
 
 
 let thisUser = sessionStorage.myapp_token;
+// let thisUser = 1;
 localStorage.setItem("userID", thisUser);
 
 let myLanguages = document.getElementById("myLanguages");
