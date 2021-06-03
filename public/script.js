@@ -1,4 +1,4 @@
-Gavin code for front end authorization starts here, checking for JWT
+// Gavin code for front end authorization starts here, checking for JWT
 window.addEventListener("load", (event) => {
   if (sessionStorage.getItem("myapp_token") === null) {
     // alert(`it appears you're not logged in, routing you to login`);
@@ -287,7 +287,7 @@ const quizScreen = () => {
   navMyVocab.classList.remove("active");
   navAddVocab.classList.remove("active");
   if (!currentLanguage) {
-    root.innerHTML = "<div><p>Please select a language to start</p></div>";
+    root.innerHTML = "<div><p>Please select a language to start.</p></div>";
     return;
   }
   let numOfWords = userWords.filter(a => a.user_id == thisUser && a.language_id == currentLanguage).length;
