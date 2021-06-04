@@ -1,1 +1,1 @@
-[]
+[{"user_id":"1622799038632","language_id":"ar","word_id":0,"times_right":0,"times_wrong":0},{"user_id":"1622800603551","language_id":"sq","word_id":1,"times_right":0,"times_wrong":0}]

@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const port = process.env.API_port || 333;
+const port = process.env.API_port || 3333;
 const fs = require("fs");
 const path = require("path");
 const passport = require("passport");
@@ -19,7 +19,27 @@ const saltRounds = 13;
 app.use(express.json());
 app.use(cors());
 
-app.use("/", express.static(__dirname + "/public"));
+// app.use(express.static('/', {index: 'index.html'}))
+app.use(express.static('public'));
+// app.get('/',function () {
+    // res.sendFile('public/index.html');
+// });
+
+// app.get('/',function () {
+    // res.sendFile('public/index.html');
+// });
+
+// app.get('/', function(req, res){
+//   res.sendFile('index.html');
+// }); 
+
+// app.get('/', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, 'public/', 'index.html'));
+// });
+
+// app.use("/", express.static(__dirname + "/"));
+// app.use("/", express.static(__dirname + "/public"));
+// app.get('/', function(req,res){res.sendfile('index.html');});
 
 app.post("/register", async (req, resp) => {
   let data = fs.readFileSync("./users.txt");
@@ -113,6 +133,8 @@ app.post("/writeuserwords", (req, resp) => {
       console.log(err);
     }
   });
+  //if don't send back resp, status remains 'pending' and multiple pending lead to problems
+  resp.sendStatus(200);
 });
 
 app.post("/writelanguagewords", (req, resp) => {
@@ -124,6 +146,7 @@ app.post("/writelanguagewords", (req, resp) => {
       console.log(err);
     }
   });
+  resp.sendStatus(200);
 });
 
 
@@ -162,7 +185,7 @@ app.get("/readlanguagewords", async (req, res) => {
 });
 
 
-app.listen(port, hostname, (err) => {
+app.listen(port, (err) => {
   if (err) {
     console.error("Failure to launch server");
     return;

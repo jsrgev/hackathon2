@@ -2,9 +2,13 @@ document.querySelector("#loginForm button").addEventListener("click", login);
 
 function login(event) {
   event.preventDefault();
-  console.log("Sent a login request");
   let em = document.querySelector("#loginForm .email").value;
   let pass = document.querySelector("#loginForm .pass").value;
+  if (em.length === 0 || pass.length === 0) {
+    alert("Please fill in both fields.");
+    return; 
+  }
+  console.log("Sent a login request");
   //TODO: Add form validation
   let user = { email: em, password: pass };
   let endpoint = "login";
@@ -12,7 +16,7 @@ function login(event) {
 }
 
 function sendData(user, endpoint, callback) {
-  let url = `http://localhost:333/${endpoint}`;
+  let url = `http://localhost:3333/${endpoint}`;
   let h = new Headers();
   h.append("Content-Type", "application/json");
   let req = new Request(url, {
@@ -43,7 +47,7 @@ function loginSuccess(data) {
   sessionStorage.setItem("myapp_token", data.token);
   console.log(sessionStorage);
   //opening the new page from here some how
-  window.open("./", "_self");
+  window.open("./index.html", "_self");
   alert("You are logged in");
 }
 

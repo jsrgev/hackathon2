@@ -276,25 +276,28 @@ input {
 #newVocabInputs {
 	width: 60%;
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 3fr 3fr;
 	gap: .3rem;
 }
 
 #myVocab {
 	width: 60%;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr 1fr 3fr 3fr;
 	gap: .3rem;
 }
 
+.number,.delete {
+	/*text-align: center;*/
+}
 
-.delete button {
+.delete * {
 	margin: auto;
 	display: block;
 	visibility: hidden;
 }
 
-.delete:hover button {
+.delete:hover * {
 	/*margin: auto;*/
 	visibility: visible;
 }

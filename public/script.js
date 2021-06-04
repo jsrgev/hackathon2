@@ -32,7 +32,12 @@ let newVocabInputs;
 let addWords;
 
 let languages = [];
-let userWordsArray;
+let languageWords = [];
+let userWords = [];
+let thisUserWords = [];
+let thisUserCurrentLanguageWords = [];
+
+// let userWordsArray;
 
 let sessionWords;
 let correctCards = 0;
@@ -45,7 +50,7 @@ let quizLength;
 
 let userLanguagesIds;
 let otherLanguagesIds;
-let allLanguagesIds;
+// let allLanguagesIds;
 let currentLanguage;
 
 // if currentLanguage is written RTL, this will be set to rtl and inserted as class, for proper text alignment
@@ -58,12 +63,39 @@ const key =
   "trnsl.1.1.20210528T084434Z.4d3133de06fa8f3a.5cfcaf3ee6f0eab20cf8b03db9e9d3851bf5abdd";
 
 
-const getThisUserWords = () => {
-  return userWords.filter(a => a.user_id == thisUser && a.language_id == currentLanguage);
-};
+// const getThisUserWords = () => {
+//   return userWords.filter(a => a.user_id == thisUser && a.language_id == currentLanguage);
+// };
 
 const wordsInCurrentLanguage = () => {
   return userWords.filter(a => a.user_id == thisUser && a.language_id == currentLanguage);
+};
+
+const deleteMyVocab = (event) => {
+  let node = event.target.closest("div");
+  let enteredWord = node.nextElementSibling.childNodes[0].textContent;
+  let languageWord = languageWords.find(a => a.translation === enteredWord && a.language_id === currentLanguage);
+  // console.log(languageWord);
+  let wordId = languageWord.word_id;
+  let occurencesInUserWords = userWords.filter(a => a.word_id === wordId);
+  // console.log(occurencesInUserWords);
+  if (occurencesInUserWords.length===1) {
+    let indexLW = languageWords.findIndex(a => a.word_id === wordId);
+    languageWords.splice(indexLW,1);
+  }
+  let indexUW = userWords.findIndex(a => a.word_id === wordId && a.user_id === thisUser);
+  userWords.splice(indexUW,1);
+  writeToFile("writeuserwords", userWords);
+  writeToFile("writelanguagewords", languageWords);
+  node.previousElementSibling.remove();
+  node.nextElementSibling.remove();
+  node.nextElementSibling.remove();
+  node.remove();
+  setThisUserWords();
+  setThisUserCurrentLanguageWords();
+  addNumbers();
+  // console.log(indexUW);
+  // console.log(userWords[indexUW]);
 }
 
 const myVocabScreen = () => {
@@ -86,19 +118,32 @@ const myVocabScreen = () => {
   root.innerHTML = "";
   let myVocab = document.createElement("div");
   myVocab.id = "myVocab";
-  myVocab.insertAdjacentHTML("beforeend", `<h3>English</h3><h3>${getLanguageName(currentLanguage)}</h3>`);
-  let thisUserWords = getThisUserWords();
-  for (let item of thisUserWords) {
+  myVocab.insertAdjacentHTML("beforeend", `<div></div><div><i class="far fa-trash-alt"></i></div><h3>English</h3><h3>${getLanguageName(currentLanguage)}</h3>`);
+  // let thisUserWords = getThisUserWords();
+  for (let item of thisUserCurrentLanguageWords) {
     let wordItem = languageWords.filter(a => a.word_id === item.word_id);
-    let content = `<div class="sourceLanguage">${wordItem[0].translation}</div><div class="targetLanguage${rtl}">${wordItem[0].word}</div>`;
+    let content = `<div class="number"></div><div class="delete"><i class="far fa-trash-alt"></i></div><div class="sourceLanguage">${wordItem[0].translation}</div><div class="targetLanguage${rtl}">${wordItem[0].word}</div>`;
     myVocab.insertAdjacentHTML("beforeend", content);
   }
   root.appendChild(myVocab);
+  let dels = document.querySelectorAll(".delete");
+  for (let div of dels) {
+    div.addEventListener("click",deleteMyVocab);
+  }
+  addNumbers();
 };
 
 
 const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+const setThisUserWords = () => {
+  thisUserWords = userWords.filter(a => a.user_id == thisUser);
+};
+
+const setThisUserCurrentLanguageWords = () => {
+  thisUserCurrentLanguageWords = thisUserWords.filter(a => a.language_id === currentLanguage);
 };
 
 const setCurrentLanguage = (id) => {
@@ -108,18 +153,24 @@ const setCurrentLanguage = (id) => {
   } else {
     rtl = "";
   }
+  setThisUserCurrentLanguageWords();
 };
 
 const selectLanguage = (event) => {
+  prepareLanguageLists();
   if (isNaN(event.target.value)) {
+    // console.log(event.target.value);
     setCurrentLanguage(event.target.value);
     // if user chooses language already learning, or new one
     root.classList.toggle("startScreen");
     if (event.target.id == "myLanguagesSelect") {
+      document.getElementById("myLanguagesSelect").value = event.target.value;
       document.getElementById("newLanguagesSelect").value = "0";
       quizScreen();
     } else {
+    // console.log("yep")
       document.getElementById("myLanguagesSelect").value = "0";
+      document.getElementById("newLanguagesSelect").value = event.target.value;
       addVocabScreen();
     }
   }
@@ -138,15 +189,15 @@ const addVocabScreen = () => {
     root.innerHTML = "<div><p>Please select a language to start.</p></div>";
     return;
   }
-
+  inputCount = 0;
   root.innerHTML = `
   <div id="topSec"><p>Enter up to ten new words or phrases you want to study:</p></div`;
   let div = document.createElement("div");
   div.id = "newVocabInputs";
   newVocabInputs = div;
-  newVocabInputs.insertAdjacentHTML("beforeend", `<h3>English</h3><h3>${getLanguageName(currentLanguage)}</h3><div><h3>Remove</h3></div>`);
-  appendInput();
+  newVocabInputs.insertAdjacentHTML("beforeend", `<div></div><div><i class="far fa-trash-alt"></i></div><h3>English</h3><h3>${getLanguageName(currentLanguage)}</h3>`);
   root.appendChild(newVocabInputs);
+  appendInput();
   root.insertAdjacentHTML("beforeend", `
     <div id="actions">
       <button id="addWords" disabled>Add words</button>
@@ -155,35 +206,32 @@ const addVocabScreen = () => {
   addWords.addEventListener("click", addWordsToDBs);
 };
 
-const submitWord = (event) => {
+const submitWord = async (event) => {
   if (event.key === "Enter" && event.target.value !== "") {
     if (currentEnteredWords.find(a => a.translation === event.target.value)) {
       alert("You've already entered this word.");
       return;
     }
     let wordInLanguageWords = languageWords.find(a => a.translation === event.target.value && a.language_id === currentLanguage);
-    let word_id = wordInLanguageWords ? wordInLanguageWords.word_id : "";
-    // if(word_id) {
-    //   console.log("yes")
-    // }
-    // if(!word_id) {
-    //   console.log("no")
-    // }
-    if (word_id) {
-      let userHasWord = userWords.some(a => a.word_id === wordInLanguageWords.word_id && a.user_id === thisUser);
-      if (userHasWord) {
+    let word_id = wordInLanguageWords ? wordInLanguageWords.word_id : null;
+    let userHasWord = thisUserCurrentLanguageWords.some(a => a.word_id === word_id);
+    if (userHasWord) {
         alert("This item is already in your vocabulary.");
         return;
-      }
     }
     inputCount++;
     addWords.disabled = false;
+    let delDiv = document.querySelector("input").parentNode.previousElementSibling;
     changeInputToString(event.target, true);
-    getTranslation(event.target.value, word_id);
+    await getTranslation(event.target.value, word_id);
+    delDiv.innerHTML = `<i class="far fa-trash-alt"></i>`;
+    delDiv.addEventListener("click", deleteRow);
   }
 };
 
 const appendInput = () => {
+  newVocabInputs.insertAdjacentHTML("beforeend",`
+    <div class="number"></div><div class="delete"></div>`);
   let div = document.createElement("div");
   div.classList.add("sourceLanguage");
   let input = document.createElement("input");
@@ -192,6 +240,7 @@ const appendInput = () => {
   div.appendChild(input);
   setTimeout(() => input.focus(), 5);
   newVocabInputs.appendChild(div);
+  addNumbers();
 };
 
 
@@ -211,13 +260,15 @@ const fetchTranslation = async(string) => {
 };
 
 const deleteRow = (event) => {
-  let node = event.target.parentNode.previousElementSibling.previousElementSibling;
-  let enteredWord = node.childNodes[0].textContent;
+  let node = event.target.closest("div");
+  let enteredWord = node.nextElementSibling.childNodes[0].textContent;
   let index = currentEnteredWords.findIndex(a => a.translation === enteredWord);
   currentEnteredWords.splice(index,1);
-  event.target.parentNode.previousElementSibling.previousElementSibling.remove();
-  event.target.parentNode.previousElementSibling.remove();
-  event.target.parentNode.remove();
+  node.previousElementSibling.remove();
+  node.nextElementSibling.remove();
+  node.nextElementSibling.remove();
+  node.remove();
+  addNumbers();
   inputCount--;
   if (inputCount === 9) {
     appendInput();
@@ -229,15 +280,10 @@ const afterGetTranslation = (word) => {
   newVocabInputs.insertAdjacentHTML('beforeend', `
     <div class="targetLanguage${rtl}"><span>${word}</span></div>
     `);
-  let div = document.createElement("div");
-  div.classList.add("delete");
-  div.innerHTML = `<button>Remove</button>`;
-  div.addEventListener("click", deleteRow);
-  newVocabInputs.appendChild(div);
   if (inputCount < 10) {
     appendInput();
   }
-}
+};
 
 let currentEnteredWords = [];
 
@@ -246,35 +292,31 @@ const getTranslation = async(string,word_id) => {
       word_id:"",
       word: "",
       translation: string,
-      alreadyInLanguageWords: false
-  }
+      // alreadyInLanguageWords: false
+  };
   if (word_id) {
     console.log("true");
     obj.word = languageWords.find(a => a.translation == string).word;
     obj.word_id = word_id;
-    obj.alreadyInLanguageWords = true
-    currentEnteredWords.push(obj)
+    // obj.alreadyInLanguageWords = true
+    currentEnteredWords.push(obj);
     afterGetTranslation(obj.word);
   } else {
     let response = await fetchTranslation(string);
     obj.word = response[0];
-    currentEnteredWords.push(obj)
+    currentEnteredWords.push(obj);
     afterGetTranslation(obj.word);
   }
-
-  // currentEnteredWords.push(obj)
-  // newVocabInputs.insertAdjacentHTML('beforeend', `
-  //   <div class="targetLanguage${rtl}"><span>${obj.word}</span></div>
-  //   `);
-  // let div = document.createElement("div");
-  // div.classList.add("delete");
-  // div.innerHTML = `<button>Remove</button>`;
-  // div.addEventListener("click", deleteRow);
-  // newVocabInputs.appendChild(div);
-  // if (inputCount < 10) {
-  //   appendInput();
-  // }
 };
+
+const addNumbers = () => {
+  // console.log(document.querySelectorAll(".number"));
+  let numberDivs = Array.from(document.querySelectorAll(".number"));
+  for (let i = 0; i<numberDivs.length; i++) {
+    // console.log(numberDivs);
+    numberDivs[i].textContent = `${i+1})`;
+  }
+}
 
 const quizScreen = () => {
   activeSection = "quiz";
@@ -290,9 +332,8 @@ const quizScreen = () => {
     root.innerHTML = "<div><p>Please select a language to start.</p></div>";
     return;
   }
-  let numOfWords = userWords.filter(a => a.user_id == thisUser && a.language_id == currentLanguage).length;
+  let numOfWords = thisUserCurrentLanguageWords.length;
   if (numOfWords < 5) {
-
     let quantity = (numOfWords == 0) ? "some" : `${5-numOfWords} more`;
     root.innerHTML = `<div><p>You need at least 5 words for a quiz. Please add ${quantity} to start!</p></div>`;
     return;
@@ -315,15 +356,15 @@ const navTo = (section, func) => {
 
 navAddVocab.addEventListener("click", () => {
   navTo("addVocab", addVocabScreen);
-})
+});
 
 navQuiz.addEventListener("click", () => {
   navTo("quiz", quizScreen);
-})
+});
 
 navMyVocab.addEventListener("click", () => {
   navTo("myVocab", myVocabScreen);
-})
+});
 
 
 const showLanguageList = (div, ids) => {
@@ -349,10 +390,12 @@ const showLanguageList = (div, ids) => {
 
 
 let getSessionWords = () => {
-  let thisUserWords = getThisUserWords();
-  quizLength = thisUserWords.length > 10 ? 40 : 15;
+  // let thisUserWords = getThisUserWords();
+  // console.log(getThisUserWords());
+  // console.log(thisUserWords);
+  quizLength = thisUserCurrentLanguageWords.length > 10 ? 40 : 15;
   let array = [];
-  for (let word of thisUserWords) {
+  for (let word of thisUserCurrentLanguageWords) {
     let score = (word.times_right - word.times_wrong > -1) ? word.times_right - word.times_wrong : 0;
     let value = Math.ceil(20 / (score + 1));
     for (let i = 0; i < value; i++) {
@@ -521,59 +564,50 @@ const fetchLanguages = async() => {
   }
 };
 
-
-let languageWords = [];
-
 const getLanguageWords = async() => {
-  let response = await fetch("http://localhost:333/readlanguagewords");
+  let response = await fetch("http://localhost:3333/readlanguagewords");
   let data = await response.json();
   languageWords = data;
 };
 
-let userWords = [];
 
 const getUserWords = async() => {
-  let response = await fetch("http://localhost:333/readuserwords");
+  let response = await fetch("http://localhost:3333/readuserwords");
   let data = await response.json();
   userWords = data;
+  setThisUserWords();
 };
-
-
 
 
 const getLanguages = (async() => {
   await getUserWords();
   await getLanguageWords();
   languages = localStorage.getItem("languages") ? await JSON.parse(localStorage.getItem("languages")) : await fetchLanguages();
-  allLanguagesIds = languages.map(a => a.language_id);
-  userWordsArray = userWords.map(a => a.language_id);
-  userLanguagesIds = allLanguagesIds.filter(a => userWordsArray.includes(a));
-  otherLanguagesIds = allLanguagesIds.filter(a => !userWordsArray.includes(a));
-  showLanguageList(myLanguages, userLanguagesIds);
-  showLanguageList(newLanguages, otherLanguagesIds);
+  prepareLanguageLists();
 })();
 
 const cleanUpAfterAdd = () => {
   let removes = document.querySelectorAll(".delete");
   for (let node of removes) {
     node.innerHTML = "";
-    node.removeEventListener("click", deleteRow)
+    node.removeEventListener("click", deleteRow);
   }
   let input = document.querySelector("input");
   if (input) {
     input.remove();
   }
-}
+  let numberDivs = document.querySelectorAll(".number");
+  numberDivs[numberDivs.length-1].textContent="";
+};
 
 const addToArrays = () => {
+  // check id # of last word in languageWords, and add 1
   let id = (languageWords == "") ? 0 : languageWords[languageWords.length - 1].word_id + 1;
   for (let item of currentEnteredWords) {
-    let {language_id,word_id,word,translation,alreadyInLanguageWords} = item;
+    let {word_id,word,translation} = item;
     let thisId = word_id ? word_id : id;
     if (!word_id) {
       id++;
-    }
-    if (!alreadyInLanguageWords) {
       languageWords.push(
         {
         word_id: thisId,
@@ -583,6 +617,10 @@ const addToArrays = () => {
         }
       );
     }
+    // push to languageWords only if not there
+    // if (word_id !== "") {
+          // }
+    // push to userWords even if another user has it
     userWords.push(
       {
         user_id: thisUser,
@@ -593,48 +631,42 @@ const addToArrays = () => {
       }
     );
   }
+  setThisUserWords();
+  setThisUserCurrentLanguageWords();
   writeToFile("writeuserwords", userWords);
   writeToFile("writelanguagewords", languageWords);
   cleanUpAfterAdd();
 };
 
-// const addToUserWords = (lastId) => {
-//   let sources = document.querySelectorAll("#newVocabInputs > .sourceLanguage > span");
-//   for (let i = 0; i < sources.length; i++) {
-//     userWords.push({
-//       user_id: thisUser,
-//       language_id: currentLanguage,
-//       word_id: lastId + i + 1,
-//       times_right: 0,
-//       times_wrong: 0
-//     });
-//   }
-//   writeToFile("writeuserwords", userWords);
-// };
+const prepareLanguageLists = () => {
+  let allLanguagesIds = languages.map(a => a.language_id);
+  let thisUserWordsIds = thisUserWords.map(a => a.language_id);
+  userLanguagesIds = allLanguagesIds.filter(a => thisUserWordsIds.includes(a));
+  otherLanguagesIds = allLanguagesIds.filter(a => !thisUserWordsIds.includes(a));
+
+  if (document.getElementById("myLanguagesSelect")) {
+    document.getElementById("myLanguagesSelect").remove();
+    document.getElementById("newLanguagesSelect").remove();
+  }
+  showLanguageList(myLanguages, userLanguagesIds);
+  showLanguageList(newLanguages, otherLanguagesIds);
+};
 
 const addWordsToDBs = () => {
   addToArrays();
-  // addToUserWords(lastId);
-  inputCount = 0;
   actions = document.getElementById("actions");
   actions.innerHTML = "<p>Your words have been added.</p>";
   let button = document.createElement("button");
   button.textContent = "Add more words";
   button.addEventListener("click", addVocabScreen);
   actions.appendChild(button);
-  document.getElementById("myLanguagesSelect").remove();
-  document.getElementById("newLanguagesSelect").remove();
-  userWordsArray = userWords.map(a => a.language_id);
-  userLanguagesIds = allLanguagesIds.filter(a => userWordsArray.includes(a));
-  otherLanguagesIds = allLanguagesIds.filter(a => !userWordsArray.includes(a));
-  showLanguageList(myLanguages, userLanguagesIds);
-  showLanguageList(newLanguages, otherLanguagesIds);
+  prepareLanguageLists();
+  document.getElementById("myLanguagesSelect").value = currentLanguage;
 };
 
 const writeToFile = (db, arr) => {
-  // console.log(arr);
   try {
-    fetch(`/${db}`, {
+    fetch(`http://localhost:3333/${db}`, {
       headers: {
         "Content-type": "application/json",
       },
@@ -646,33 +678,3 @@ const writeToFile = (db, arr) => {
   }
 };
 
-
-const writeUserWords = (arr) => {
-  console.log(arr);
-  try {
-    fetch("/writeuserwords", {
-      headers: {
-        "Content-type": "application/json",
-      },
-      method: "post",
-      body: JSON.stringify(arr),
-    });
-  } catch (e) {
-    console.log(`error occured at write user words ${e}`);
-  }
-};
-
-const writeLanguageWords = (arr) => {
-  console.log(arr);
-  try {
-    fetch("/writelanguagewords", {
-      headers: {
-        "Content-type": "application/json",
-      },
-      method: "post",
-      body: JSON.stringify(arr),
-    });
-  } catch (e) {
-    console.log(`error occured at write user words ${e}`);
-  }
-};

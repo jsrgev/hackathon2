@@ -2,9 +2,22 @@ document.querySelector("#regForm button").addEventListener("click", doReg);
 
 function doReg(ev) {
   ev.preventDefault();
-  console.log("Send a Register request");
   let em = document.querySelector("#regForm .email").value;
   let pass = document.querySelector("#regForm .pass").value;
+  let pass2 = document.querySelector("#regForm .pass2").value;
+  if (em.length === 0) {
+    alert("Please enter your email.");
+    return; 
+  }
+  if (pass.length <6) {
+    alert("Please enter a password with at least 6 characters.");
+    return; 
+  }
+  if (pass !== pass2) {
+    alert("The passwords do not match.");
+    return;
+  }
+  console.log("Send a Register request");
   //TODO: Add form validation
   let user = { email: em, password: pass };
   let endpoint = "register";
@@ -12,7 +25,7 @@ function doReg(ev) {
 }
 
 function sendData(user, endpoint, callback) {
-  let url = `http://localhost:333/${endpoint}`;
+  let url = `http://localhost:3333/${endpoint}`;
   let h = new Headers();
   h.append("Content-Type", "application/json");
   let req = new Request(url, {
@@ -40,6 +53,8 @@ function registerSuccess(data) {
   //user has been registered
   console.log("new user created", data);
   alert("You have been registered");
+  window.open("./login.html", "_self");
+  // alert("You are logged in");
 }
 console.log(sessionStorage.getItem("myapp_token"));
 console.log(sessionStorage);
