@@ -119,7 +119,6 @@ const myVocabScreen = () => {
   let myVocab = document.createElement("div");
   myVocab.id = "myVocab";
   myVocab.insertAdjacentHTML("beforeend", `<div></div><div><i class="far fa-trash-alt"></i></div><h3>English</h3><h3>${getLanguageName(currentLanguage)}</h3>`);
-  // let thisUserWords = getThisUserWords();
   for (let item of thisUserCurrentLanguageWords) {
     let wordItem = languageWords.filter(a => a.word_id === item.word_id);
     let content = `<div class="number"></div><div class="delete"><i class="far fa-trash-alt"></i></div><div class="sourceLanguage">${wordItem[0].translation}</div><div class="targetLanguage${rtl}">${wordItem[0].word}</div>`;
@@ -213,7 +212,7 @@ const submitWord = async (event) => {
       return;
     }
     let wordInLanguageWords = languageWords.find(a => a.translation === event.target.value && a.language_id === currentLanguage);
-    let word_id = wordInLanguageWords ? wordInLanguageWords.word_id : null;
+    let word_id = wordInLanguageWords ? wordInLanguageWords.word_id : -1;
     let userHasWord = thisUserCurrentLanguageWords.some(a => a.word_id === word_id);
     if (userHasWord) {
         alert("This item is already in your vocabulary.");
@@ -289,16 +288,13 @@ let currentEnteredWords = [];
 
 const getTranslation = async(string,word_id) => {
   let obj = {
-      word_id:"",
+      word_id:-1,
       word: "",
       translation: string,
-      // alreadyInLanguageWords: false
   };
-  if (word_id) {
-    console.log("true");
-    obj.word = languageWords.find(a => a.translation == string).word;
+  if (word_id >= 0) {
+    obj.word = languageWords.find(a => a.translation == string && a.language_id == currentLanguage).word;
     obj.word_id = word_id;
-    // obj.alreadyInLanguageWords = true
     currentEnteredWords.push(obj);
     afterGetTranslation(obj.word);
   } else {
@@ -310,10 +306,8 @@ const getTranslation = async(string,word_id) => {
 };
 
 const addNumbers = () => {
-  // console.log(document.querySelectorAll(".number"));
   let numberDivs = Array.from(document.querySelectorAll(".number"));
   for (let i = 0; i<numberDivs.length; i++) {
-    // console.log(numberDivs);
     numberDivs[i].textContent = `${i+1})`;
   }
 }
@@ -390,9 +384,6 @@ const showLanguageList = (div, ids) => {
 
 
 let getSessionWords = () => {
-  // let thisUserWords = getThisUserWords();
-  // console.log(getThisUserWords());
-  // console.log(thisUserWords);
   quizLength = thisUserCurrentLanguageWords.length > 10 ? 40 : 15;
   let array = [];
   for (let word of thisUserCurrentLanguageWords) {
@@ -565,14 +556,13 @@ const fetchLanguages = async() => {
 };
 
 const getLanguageWords = async() => {
-  let response = await fetch("http://localhost:3333/readlanguagewords");
+  let response = await fetch("./readlanguagewords");
   let data = await response.json();
   languageWords = data;
 };
 
-
 const getUserWords = async() => {
-  let response = await fetch("http://localhost:3333/readuserwords");
+  let response = await fetch("./readuserwords");
   let data = await response.json();
   userWords = data;
   setThisUserWords();
@@ -605,8 +595,9 @@ const addToArrays = () => {
   let id = (languageWords == "") ? 0 : languageWords[languageWords.length - 1].word_id + 1;
   for (let item of currentEnteredWords) {
     let {word_id,word,translation} = item;
-    let thisId = word_id ? word_id : id;
-    if (!word_id) {
+    let thisId = (word_id >= 0) ? word_id : id;
+    // push to languageWords only if not there
+    if (word_id < 0) {
       id++;
       languageWords.push(
         {
@@ -617,9 +608,6 @@ const addToArrays = () => {
         }
       );
     }
-    // push to languageWords only if not there
-    // if (word_id !== "") {
-          // }
     // push to userWords even if another user has it
     userWords.push(
       {
@@ -666,7 +654,7 @@ const addWordsToDBs = () => {
 
 const writeToFile = (db, arr) => {
   try {
-    fetch(`http://localhost:3333/${db}`, {
+    fetch(`./${db}`, {
       headers: {
         "Content-type": "application/json",
       },

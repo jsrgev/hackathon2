@@ -25,7 +25,7 @@ function doReg(ev) {
 }
 
 function sendData(user, endpoint, callback) {
-  let url = `http://localhost:3333/${endpoint}`;
+  let url = `./${endpoint}`;
   let h = new Headers();
   h.append("Content-Type", "application/json");
   let req = new Request(url, {

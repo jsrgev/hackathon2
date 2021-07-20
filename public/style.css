@@ -1,3 +1,52 @@
+@font-face {
+    font-family:'dejavu_sans';
+    src:url('fonts/dejavusans-webfont.eot');
+    src:url('fonts/dejavusans-webfont.eot?#iefix') format('embedded-opentype'),
+     local('DejaVuSans'),
+         url('fonts/dejavusans-webfont.woff2') format('woff2'),
+         url('fonts/dejavusans-webfont.woff') format('woff'),
+         url('fonts/dejavusans-webfont.ttf') format('truetype'),
+         url('fonts/dejavusans-webfont.svg#dejavu_sansbook') format('svg');
+    font-weight:400;
+    font-style:normal;}
+
+@font-face {
+    font-family:'dejavu_sans';
+    src:url('fonts/dejavusans-bold-webfont.eot');
+    src:url('fonts/dejavusans-bold-webfont.eot?#iefix') format('embedded-opentype'),
+     local('DejaVuSans-Bold'),
+         url('fonts/dejavusans-bold-webfont.woff2') format('woff2'),
+         url('fonts/dejavusans-bold-webfont.woff') format('woff'),
+         url('fonts/dejavusans-bold-webfont.ttf') format('truetype'),
+         url('fonts/dejavusans-bold-webfont.svg#dejavu_sansbold') format('svg');
+    font-weight:700;
+    font-style:normal;}
+
+@font-face {
+    font-family:'dejavu_sans';
+    src:url('fonts/dejavusans-oblique-webfont.eot');
+    src:url('fonts/dejavusans-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+     local('DejaVuSans-Oblique'),
+         url('fonts/dejavusans-oblique-webfont.woff2') format('woff2'),
+         url('fonts/dejavusans-oblique-webfont.woff') format('woff'),
+         url('fonts/dejavusans-oblique-webfont.ttf') format('truetype'),
+         url('fonts/dejavusans-oblique-webfont.svg#dejavu_sansoblique') format('svg');
+    font-weight:400;
+    font-style:italic;}
+
+:root {
+	--orange: #ff5f2f;
+	--green: #37dcae;
+	--blue: #64A2E9;
+	--lightblue: #eaf6ff;
+	--bluetext: #419aff;
+	--gray: #b9b9b9;
+	--mediumgray: #c1c1c1;
+	--lightgray: #f3f3f3;
+	--graytext: #6d6d6d;
+}
+
+
 html{
 	font-size:  16px;
 }
@@ -5,46 +54,55 @@ html{
 body {
 	margin: 0;
 	padding: 30px 40px;
-	background-color: #88D4E4;
+	/*background-color: #c4b3ef;*/
+	/*background-color: #88D4E4;*/
 }
 
-body, input {
-	font-family: calibri;
+body, input, button {
+	font-family:"dejavu_sans", calibri, sans-serif;
+	/*line-height:1.4;*/
+	-webkit-text-size-adjust: 100%;
 	font-size: 1rem;	
 }
 
-header {
-	/*height: 6rem;*/
-	/*margin: 0 40px;*/
-	/*display: flex;*/
-    /*justify-content: space-between;*/
-}
 
 h1 {
     text-align: center;
 	margin-top: 0;
-	color: #0055ff;
-}
+	color: var(--orange);
+    font-family: 'IM Fell Great Primer', serif;
+    letter-spacing: 1px;
+  }
 
 header i {
 	margin-left: 1rem;
 	color: #ffff3a;
+	color: #fff;
 	font-size: 1.8rem;
+    -webkit-text-stroke: 2px var(--green);
+    -text-stroke: 2px var(--green);
 }
 
 h3 {
     text-align: center;
 	margin-top: 0;
-	font-size: 1.1rem;
+	font-size: 1rem;
 }
 
-a {
-  text-decoration: none;
-  color: black;
+a, a:visited {
+	text-decoration: none;
+	color: var(--green);
+	font-weight: 600;
+}
+
+
+nav {
+	color: var(--green);
+    text-shadow: 0.02em 0.02em 0.02em white;
 }
 
 #root {
-	border: 2px solid gray;
+	border: 2px solid var(--blue);
 	padding: 2rem;
 	min-height: calc(100vh - 128px - 60px - 35px);
     align-content: flex-start;
@@ -63,7 +121,7 @@ section {
   display: flex;
   justify-content: center;
   align-items: center;
-	border: 2px solid gray;
+	border: 2px solid var(--blue);
 	padding: 2rem;
 	min-height: calc(100vh - 128px - 60px);
     align-content: flex-start;
@@ -113,7 +171,7 @@ legend {
 	/*grid-template-columns: repeat(3, 1fr);*/
 	gap: 2rem;
     /*justify-content: space-around;*/
-    font-size: 1.1rem;
+    /*font-size: 1.1rem;*/
 }
 
 #languageSelection select option {
@@ -138,21 +196,22 @@ nav {
 }
 
 nav div {
-	border: 2px solid lightgray;
+	border: 2px solid var(--lightblue);
 	border-bottom: none;
 	padding: 3px;
-	background: lightgray;
+	background: var(--lightblue);
 	text-align: center;
 	box-sizing: border-box;
-  position: relative;
+	position: relative;
+	font-weight: 600;
 }
 
 .active {
-	border: 2px solid gray;
+	border: 2px solid var(--blue);
 	border-bottom: none;
 	background-color: white;
 	color: #0055ff;
-	font-weight: 600;
+	color: var(--orange);
 }
 
 
@@ -160,10 +219,10 @@ nav div {
 .active:after {
 	content: '';
     position: absolute;
-    bottom: -2px;
+    bottom: -3px;
     left: 0;
     width: 100%;
-    height: 2px;
+    height: 3px;
     background-color: white;
 }
 
@@ -195,7 +254,7 @@ select {
 .card {
 	width: 300px;
 	height: 100px;
-	border: 2px solid #88D4E4;
+	border: 2px solid var(--blue);
 	display: grid;
 	justify-content: center;
 	align-items: center;
@@ -216,7 +275,10 @@ select {
 }
 
 input {
-		padding: 0 0 1px 0;
+	padding: 0 0 1px 0;
+    border-width: 0 0 2px 0;
+    border-color: var(--gray);
+	outline: 0;
 }
 
 .card > div input {
@@ -228,21 +290,17 @@ input {
 }
 
 .targetLanguage, .targetLanguage input {
-	color:  #0055ff;
-	border-color: #0055ff;
+	color: var(--bluetext);
+	border-color: var(--blue);
 }
 
 .sourceLanguage, .sourceLanguage input {
-	color: gray;
-	border-color: gray;
+	color: var(--graytext);
+	border-color: var(--gray);
 }
 div.sourceLanguage {
-	height: 27px;
-}
-
-input {
-    border-width: 0 0 2px 0;
-	outline:  0;
+	min-height: 27px;
+	min-width: 12rem;
 }
 
 
@@ -274,17 +332,17 @@ input {
 
 
 #newVocabInputs {
-	width: 60%;
+	/*width: 60%;*/
 	display: grid;
 	grid-template-columns: 1fr 1fr 3fr 3fr;
-	gap: .3rem;
+	gap: .3rem 2rem;
 }
 
 #myVocab {
-	width: 60%;
+	/*width: 60%;*/
 	display: grid;
 	grid-template-columns: 1fr 1fr 3fr 3fr;
-	gap: .3rem;
+	gap: .3rem 2rem;
 }
 
 .number,.delete {
@@ -319,19 +377,25 @@ button {
 	background-color: white;
 	outline: none;
 	border: 2px solid #0055ff;
+	border: 2px solid var(--green);
 	border-radius: 6px;
-  box-shadow: 1px 1px 2px lightgrey;
-
+	box-shadow: 1px 1px 2px var(--mediumgray);
 }
 
-button:hover,button:focus {
-	box-shadow: inset 1px 1px 2px lightgrey;
-	background-color: #ececec;
-	border-color: blue;
+
+button:hover, button:focus {
+	box-shadow: 1px 1px 2px var(--mediumgray),
+	  inset 1px 1px 2px var(--mediumgray),
+	  inset -1px -1px 2px white;
+	background-color: var(--lightgray);
+	border-color: var(--green);
 }
 
 button:active {
-    box-shadow: inset 1px 1px 2px grey;
+	background-color: #e7e7e7;
+    box-shadow: 1px 1px 2px var(--mediumgray),
+      inset 1.5px 1.5px 3px var(--gray),
+      inset -1.5px -1.5px 3px white;
 }
 
 footer {

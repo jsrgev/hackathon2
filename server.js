@@ -14,57 +14,24 @@ const saltRounds = 13;
 // const users = require("./users").users;
 //28/05/2021, deleted
 
+// const directory = "/languagedragon";
+const directory = ".";
+
+
+app.use(cors());
+
 
 //handling json body requests
 app.use(express.json());
-app.use(cors());
 
-// app.use("/", express.static(__dirname + "/public"));
+app.use("/", express.static(__dirname + "/public"));
 
-// app.use(express.static(__dirname + "/public"));
-// app.get('/', (req, res)=>{
-//    res.sendFile('index.html');
-// }); 
-
-// app.use(express.static(__dirname + "/public"));
-// app.get('/', (req, res)=>{
-//    res.sendFile('index.html');
-// });
-
-// app.get('/', (req, res)=>{
-//    res.sendFile(__dirname + "/public/index.html");
-// });
-
-app.get('/languagedragon', (req, res)=>{
+app.get(directory, (req, res)=>{
    res.sendFile(__dirname + "/public/index.html");
 });
 
-// app.use(express.static('/', {index: 'index.html'}))
-// app.use(express.static('public'));
-// app.get('/',function () {
-    // res.sendFile('public/index.html');
-// });
 
-// app.get('/',function () {
-    // res.sendFile('public/index.html');
-// });
-
-// app.get('/', function(req, res){
-//   res.sendFile('index.html');
-// }); 
-
-// app.get('/', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, 'public/', 'index.html'));
-// });
-
-// app.get('/languagedragon', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, 'public/', 'index.html'));
-// });
-
-// app.use("/", express.static(__dirname + "/"));
-// app.get('/', function(req,res){res.sendfile('index.html');});
-
-app.post("/register", async (req, resp) => {
+app.post(`${directory}/register`, async (req, resp) => {
   let data = fs.readFileSync("./users.txt");
   let dataString = data.toString();
   let users = JSON.parse(dataString);
@@ -97,7 +64,7 @@ app.post("/register", async (req, resp) => {
 let loggedIn = false;
 
 let id;
-app.post("/login", async (req, res) => {
+app.post(`${directory}/login`, cors(), async (req, res) => {
   //to do - check against the file and not users array in users.js
   let loggedIn = false;
   let submittedPass;
@@ -143,11 +110,21 @@ app.post("/login", async (req, res) => {
     }
   });
 });
-console.log(loggedIn);
+// console.log(loggedIn);
 
 
 
-app.post("/writeuserwords", (req, resp) => {
+// let dir = __dirname"
+// fs.writeFile("./directoryCheck.txt", __dirname, (err) => {
+//     if (err) {
+//       console.log(err);
+//     }
+//   });
+// fs.writeFile("./directoryCheck.txt", dir);
+// fs.writeFile("./directoryCheck.txt", dir);
+
+
+app.post(`${directory}/writeuserwords`, (req, resp) => {
   let data = req.body;
   //require the ./ when writing a file
   //MUST PASS IN CALLBACK WHEN DOING WRITE FILE
@@ -160,7 +137,7 @@ app.post("/writeuserwords", (req, resp) => {
   resp.sendStatus(200);
 });
 
-app.post("/writelanguagewords", (req, resp) => {
+app.post(`${directory}/writelanguagewords`, (req, resp) => {
   let data = req.body;
   //require the ./ when writing a file
   //MUST PASS IN CALLBACK WHEN DOING WRITE FILE
@@ -172,46 +149,43 @@ app.post("/writelanguagewords", (req, resp) => {
   resp.sendStatus(200);
 });
 
-
-app.get("/readuserwords", async (req, res) => {
+// console.log(`${directory}/readuserwords`);
+app.get(`${directory}/readuserwords`, async (req, res) => {
   let array = [];
   try {
     await fs.readFile("userWords.txt", (err, data) => {
       let fileString = data.toString();
       let fileJSON = JSON.parse(fileString);
-      // console.log(`here is file JSON ${fileJSON}`);
-      array = fileJSON;
-      // array = JSON.parse(fileString);
-      // console.log("array");
-      res.send(array);
+      // array = fileJSON;
+      res.send(fileJSON);
     });
   } catch (e) {
     console.log(e);
   }
 });
-app.get("/readlanguagewords", async (req, res) => {
-  // console.log("a")
+app.get(`${directory}/readlanguagewords`, async (req, res) => {
   let array = [];
   try {
     await fs.readFile("languageWords.txt", (err, data) => {
       let fileString = data.toString();
       let fileJSON = JSON.parse(fileString);
       // console.log(`here is file string ${fileJSON}`);
-      array = fileJSON;
-      res.send(array);
+      // array = fileJSON;
+      res.send(fileJSON);s
       // array = JSON.parse(fileString);
     });
-    // console.log(`here's the array ${array}`);
   } catch (e) {
-    // console.log(e);
+    console.log(e);
   }
 });
 
 
-app.listen(port, (err) => {
-  if (err) {
-    console.error("Failure to launch server");
-    return;
-  }
-  console.log(`Listening on port ${port}`);
-});
+app.listen(3333);
+
+// app.listen(port, (err) => {
+//   if (err) {
+//     console.error("Failure to launch server");
+//     return;
+//   }
+//   console.log(`Listening on port ${port}`);
+// });
