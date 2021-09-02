@@ -190,7 +190,10 @@ const addVocabScreen = () => {
   }
   inputCount = 0;
   root.innerHTML = `
-  <div id="topSec"><p>Enter up to ten new words or phrases you want to study:</p></div`;
+  <div id="topSec">
+    <p>Type an English word or phrase and press <em>Enter</em> on your keyboard to get a translation.</p>
+    <p>Click the <em>Add Words</em> button to save the items to your vocabulary. You can add up to ten at a time.</p>
+  </div`;
   let div = document.createElement("div");
   div.id = "newVocabInputs";
   newVocabInputs = div;
